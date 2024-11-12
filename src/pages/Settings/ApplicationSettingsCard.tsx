@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import { DialogHeader, Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
+import { BaseDirectory, mkdir, writeTextFile } from "@tauri-apps/plugin-fs";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 function ApplicationSettingsCard() {
   const [applicationId, saveApplicationId] = useLocalStorage(
@@ -12,16 +13,81 @@ function ApplicationSettingsCard() {
   );
 
   const [certFileName, setCertFileName] = useLocalStorage("certFileName", "");
-  const [_certFileContent, setCertFileContent] = useLocalStorage(
+  const [certFileContent, setCertFileContent] = useLocalStorage(
     "certFileContent",
     ""
   );
 
   const [keyFileName, setKeyFileName] = useLocalStorage("certKeyName", "");
-  const [_keyFileContent, setKeyFileContent] = useLocalStorage(
+  const [keyFileContent, setKeyFileContent] = useLocalStorage(
     "certKeyContent",
     ""
   );
+
+  
+  const [applicationSetup, setApplicationSetup] = useLocalStorage(
+    "application-setup",
+    false
+  );
+  const [errors, setErrors] = useState("");
+
+  useEffect(()=>{
+    console.log("effect")
+    console.log(applicationId)
+    if(!applicationId){
+      setApplicationSetup(false)
+      setErrors("Please set an application ID")
+      return;
+    }
+    if(!keyFileContent){
+      setApplicationSetup(false)
+      setErrors("Please upload your mTLS key")
+      return;
+    }
+    if(!certFileContent){
+      setApplicationSetup(false)
+      setErrors("Please upload your mTLS cert")
+      return;
+    }
+
+    try {
+      const certContent = window.atob(certFileContent)
+      console.log(certContent)
+      console.log(certContent.startsWith("-----BEGIN CERTIFICATE-----"))
+      if(!certContent.startsWith("-----BEGIN CERTIFICATE-----")){
+        setErrors("Invalid mTLS cert")
+        setApplicationSetup(false)
+        return
+      }
+    } catch(e) {
+      console.log(certFileContent)
+      console.log(e)
+      setErrors("Invalid mTLS cert")
+      setApplicationSetup(false)
+      return
+    }
+
+    try {
+      const keyContent = window.atob(keyFileContent)
+      console.log(keyContent)
+      console.log(keyContent.startsWith("-----BEGIN PRIVATE KEY-----"))
+      if(!keyContent.startsWith("-----BEGIN PRIVATE KEY-----")){
+        setErrors("Invalid mTLS cert")
+        setApplicationSetup(false)
+        return
+      }
+    } catch(e) {
+      console.log(certFileContent)
+      console.log(e)
+      setErrors("Invalid mTLS key")
+      setApplicationSetup(false)
+      return
+    }
+
+    setErrors("")
+    setApplicationSetup(true)
+
+  }, [keyFileContent, certFileContent, applicationId])
 
   const certFileInputRef = useCallback((node: any) => {
     if (node !== null) {
@@ -36,6 +102,7 @@ function ApplicationSettingsCard() {
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(myFile);
       node.files = dataTransfer.files;
+      
     }
   }, []);
 
@@ -58,8 +125,7 @@ function ApplicationSettingsCard() {
   return (
     <>
       <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline">Edit Application Settings</Button>
+        <DialogTrigger asChild>{applicationSetup ? <Button variant="outline">Edit Application Settings</Button> :<Button variant="outline">Set Application Settings</Button>}
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -81,7 +147,7 @@ function ApplicationSettingsCard() {
                 <Input
                   id="cert"
                   type="file"
-                  onChange={(e: any) => {
+                  onChange={async (e: any) => {
                     try {
                       const file = e?.target?.files?.[0];
                       if (file) {
@@ -89,14 +155,21 @@ function ApplicationSettingsCard() {
 
                         // Use FileReader to read the file content as a Base64 string
                         const reader = new FileReader();
-                        reader.onload = () => {
+                        reader.onload = async () => {
                           const base64Content = (reader?.result as any)?.split(
                             ","
                           )?.[1];
                           setCertFileName(file.name);
                           setCertFileContent(base64Content);
+                          await (mkdir('', {
+                            baseDir: BaseDirectory.AppData,
+                          }).catch(console.log));
+                          await writeTextFile('cert.pem', window.atob(base64Content), {
+                            baseDir: BaseDirectory.AppData,
+                          });
                         };
                         reader.readAsDataURL(file);
+                        
                       } else {
                         const myFile = new File(["Hello World!"], certFileName, {
                           type: "text/plain",
@@ -118,7 +191,7 @@ function ApplicationSettingsCard() {
                 <Input
                   id="key"
                   type="file"
-                  onChange={(e: any) => {
+                  onChange={async (e: any) => {
                     try {
                       const file = e?.target?.files?.[0];
                       if (file) {
@@ -126,12 +199,18 @@ function ApplicationSettingsCard() {
 
                         // Use FileReader to read the file content as a Base64 string
                         const reader = new FileReader();
-                        reader.onload = () => {
+                        reader.onload = async () => {
                           const base64Content = (reader?.result as any)?.split(
                             ","
                           )?.[1];
                           setKeyFileName(file.name);
                           setKeyFileContent(base64Content);
+                          await (mkdir('', {
+                            baseDir: BaseDirectory.AppData,
+                          }).catch(console.log));
+                          await writeTextFile('key.pem', window.atob(base64Content), {
+                            baseDir: BaseDirectory.AppData,
+                          });
                         };
                         reader.readAsDataURL(file);
                       } else {
@@ -151,6 +230,8 @@ function ApplicationSettingsCard() {
                   }}
                   ref={keyFileInputRef}
                 />
+                <p className="text-red-900">{errors}</p>
+                <p>{applicationSetup ? <p>Teller Connection Setup</p> :<p>Please fill out application details</p>}</p>
               </div>
             </div>
           </form>
