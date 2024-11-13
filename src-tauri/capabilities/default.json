@@ -7,7 +7,6 @@
   ],
   "permissions": [
     "core:default",
-    "shell:allow-open",
     "http:default",
     {
       "identifier": "http:default",
@@ -16,22 +15,6 @@
           "url": "https://api.teller.io/*"
         }
       ]
-    },
-    "shell:default",
-    {
-      "identifier": "shell:allow-execute",
-      "allow": [
-        {
-          "name": "curl",
-          "args": true,
-          "sidecar": true
-        }
-      ]
-    },
-    "fs:default",
-    {
-      "identifier": "fs:allow-app-write",
-      "allow": [{ "path": "$APPDATA/*" }]
     }
   ]
 }
