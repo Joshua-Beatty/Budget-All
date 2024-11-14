@@ -1,6 +1,6 @@
 use base64::Engine;
 use reqwest::{Client, Method};
-use tauri_plugin_http::reqwest::{self, Identity};
+use reqwest::Identity;
 
 #[tauri::command(async)]
 async fn fetch_with_mtls(
