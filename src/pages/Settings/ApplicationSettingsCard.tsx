@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { DialogHeader, Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import { BaseDirectory, mkdir, writeTextFile } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, mkdir, writeTextFile, remove } from "@tauri-apps/plugin-fs";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useCallback, useEffect, useState } from "react";
 
@@ -18,11 +18,11 @@ function ApplicationSettingsCard() {
     ""
   );
 
-  const [keyFileName, setKeyFileName] = useLocalStorage("certKeyName", "");
-  const [keyFileContent, setKeyFileContent] = useLocalStorage(
-    "certKeyContent",
-    ""
-  );
+  // const [keyFileName, setKeyFileName] = useLocalStorage("certKeyName", "");
+  // const [keyFileContent, setKeyFileContent] = useLocalStorage(
+  //   "certKeyContent",
+  //   ""
+  // );
 
   
   const [applicationSetup, setApplicationSetup] = useLocalStorage(
@@ -39,55 +39,38 @@ function ApplicationSettingsCard() {
       setErrors("Please set an application ID")
       return;
     }
-    if(!keyFileContent){
-      setApplicationSetup(false)
-      setErrors("Please upload your mTLS key")
-      return;
-    }
+    // if(!keyFileContent){
+    //   setApplicationSetup(false)
+    //   setErrors("Please upload your mTLS key")
+    //   return;
+    // }
     if(!certFileContent){
       setApplicationSetup(false)
       setErrors("Please upload your mTLS cert")
       return;
     }
 
-    try {
-      const certContent = window.atob(certFileContent)
-      console.log(certContent)
-      console.log(certContent.startsWith("-----BEGIN CERTIFICATE-----"))
-      if(!certContent.startsWith("-----BEGIN CERTIFICATE-----")){
-        setErrors("Invalid mTLS cert")
-        setApplicationSetup(false)
-        return
-      }
-    } catch(e) {
-      console.log(certFileContent)
-      console.log(e)
-      setErrors("Invalid mTLS cert")
-      setApplicationSetup(false)
-      return
-    }
-
-    try {
-      const keyContent = window.atob(keyFileContent)
-      console.log(keyContent)
-      console.log(keyContent.startsWith("-----BEGIN PRIVATE KEY-----"))
-      if(!keyContent.startsWith("-----BEGIN PRIVATE KEY-----")){
-        setErrors("Invalid mTLS cert")
-        setApplicationSetup(false)
-        return
-      }
-    } catch(e) {
-      console.log(certFileContent)
-      console.log(e)
-      setErrors("Invalid mTLS key")
-      setApplicationSetup(false)
-      return
-    }
+    // try {
+    //   const keyContent = window.atob(keyFileContent)
+    //   console.log(keyContent)
+    //   console.log(keyContent.startsWith("-----BEGIN PRIVATE KEY-----"))
+    //   if(!keyContent.startsWith("-----BEGIN PRIVATE KEY-----")){
+    //     setErrors("Invalid mTLS cert")
+    //    // setApplicationSetup(false)
+    //     //return
+    //   }
+    // } catch(e) {
+    //   console.log(certFileContent)
+    //   console.log(e)
+    //   setErrors("Invalid mTLS key")
+    //   //setApplicationSetup(false)
+    //   //return
+    // }
 
     setErrors("")
     setApplicationSetup(true)
 
-  }, [keyFileContent, certFileContent, applicationId])
+  }, [/*keyFileContent*/, certFileContent, applicationId])
 
   const certFileInputRef = useCallback((node: any) => {
     if (node !== null) {
@@ -106,21 +89,21 @@ function ApplicationSettingsCard() {
     }
   }, []);
 
-  const keyFileInputRef = useCallback((node: any) => {
-    if (node !== null) {
-      console.log("ref", node); // node = elRef.current
+  // const keyFileInputRef = useCallback((node: any) => {
+  //   if (node !== null) {
+  //     console.log("ref", node); // node = elRef.current
 
-      const myFile = new File(["Hello World!"], keyFileName, {
-        type: "text/plain",
-        lastModified: +new Date(),
-      });
+  //     const myFile = new File(["Hello World!"], keyFileName, {
+  //       type: "text/plain",
+  //       lastModified: +new Date(),
+  //     });
 
-      // Now let's create a DataTransfer to get a FileList
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(myFile);
-      node.files = dataTransfer.files;
-    }
-  }, []);
+  //     // Now let's create a DataTransfer to get a FileList
+  //     const dataTransfer = new DataTransfer();
+  //     dataTransfer.items.add(myFile);
+  //     node.files = dataTransfer.files;
+  //   }
+  // }, []);
 
   return (
     <>
@@ -143,7 +126,7 @@ function ApplicationSettingsCard() {
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="cert">Cert</Label>
+                <Label htmlFor="cert">PKCS12 File</Label>
                 <Input
                   id="cert"
                   type="file"
@@ -161,9 +144,11 @@ function ApplicationSettingsCard() {
                           )?.[1];
                           setCertFileName(file.name);
                           setCertFileContent(base64Content);
-                          await (mkdir('', {
-                            baseDir: BaseDirectory.AppData,
-                          }).catch(console.log));
+                          try {
+                            await (mkdir('', {
+                              baseDir: BaseDirectory.AppData,
+                            }).catch(console.log));
+                          } catch{}
                           await writeTextFile('cert.pem', window.atob(base64Content), {
                             baseDir: BaseDirectory.AppData,
                           });
@@ -187,7 +172,7 @@ function ApplicationSettingsCard() {
                   }}
                   ref={certFileInputRef}
                 />
-                <Label htmlFor="key">Key</Label>
+                {/* <Label htmlFor="key">Key</Label>
                 <Input
                   id="key"
                   type="file"
@@ -229,7 +214,7 @@ function ApplicationSettingsCard() {
                     }
                   }}
                   ref={keyFileInputRef}
-                />
+                /> */}
                 <p className="text-red-900">{errors}</p>
                 <p>{applicationSetup ? <p>Teller Connection Setup</p> :<p>Please fill out application details</p>}</p>
               </div>

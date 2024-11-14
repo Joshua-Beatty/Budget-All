@@ -58,6 +58,11 @@ function AccountEntry({
 
   const [state, setState] = useState(State.requesting);
   const [accounts, setAccounts] = useState<Account[]>();
+  
+  const [certFileContent, _setCertFileContent] = useLocalStorage(
+    "certFileContent",
+    ""
+  );
 
   useEffect(() => {
     fetchData();
@@ -67,7 +72,7 @@ function AccountEntry({
     []
   );
 
-  const client = new Client(enrollment.accessToken);
+  const client = new Client(enrollment.accessToken, certFileContent);
   async function fetchData() {
     console.log("fetching data")
     try {
@@ -82,11 +87,13 @@ function AccountEntry({
     } catch (e) {
       console.log(e);
       setState(State.error);
+      console.trace()
+      throw e
     }
   }
 
   return (
-    <div className="w-1/3">
+    <div className="max-w-lg w-10/12">
       <div className="border-b flex justify-between align-middle">
         <h2 className="inline m-0 scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           {enrollment.enrollment.institution.name}
@@ -109,7 +116,7 @@ function AccountEntry({
       </div>
       {state == State.success ? (
         <>
-          <Table className="w-1/2 m-auto">
+          <Table className="w-11/12 m-auto">
             <TableHeader>
               <TableRow>
                 <TableHead>Account Name</TableHead>
