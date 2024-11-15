@@ -15,6 +15,7 @@
           "url": "https://api.teller.io/*"
         }
       ]
-    }
+    },
+    "store:default"
   ]
 }
