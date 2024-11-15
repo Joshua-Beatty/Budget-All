@@ -24,7 +24,7 @@ function Tabs({ children,  title  }: { children: any, title: string }) {
             <>
               <button
                 type="button"
-                className="inline-flex flex-grow flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-neutral-800 group"
+                className="inline-flex flex-grow flex-col items-center justify-center px-5 group"
                 onClick={()=>{navigate(x.link)}}
               >
                 {x.icon}
