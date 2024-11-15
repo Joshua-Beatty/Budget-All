@@ -24,7 +24,7 @@ function App() {
 
   return (
     <Tabs title="Settings">
-      <div className="w-10/12 flex justify-between pb-2">
+      <div className="w-full flex justify-between pb-2">
         <ApplicationSettingsCard />
         <AccountSettingsButton />
       </div>
