@@ -1,5 +1,5 @@
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Account } from "../Settings/AccountEntry";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -8,6 +8,7 @@ import Client from "@/services/client";
 import { LuPlusCircle } from "react-icons/lu";
 import TransactionHistory from "./TransactionHistory";
 import storePromise from "@/services/store";
+import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import Tabs from "../Tabs";
 import {
   Dialog,
@@ -17,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import MonthChanger from "../Components/MonthChanger";
 
 enum State {
   blank = 0,
@@ -73,6 +75,15 @@ function Transactions() {
     }
   }
 
+  const [currDate, setCurrDate] = useState(new Date())
+  const [currUTCDate, setCurrUTCDate] = useState(new Date())
+  useEffect(()=>{
+    const newDate = new Date(+currDate)
+    setCurrUTCDate(new Date(`${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`))
+    console.log("Updating currUTC date")
+    console.log(currUTCDate, `${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`)
+  }, [currDate])
+
   return (
     <Tabs title="Transactions">
       <div className="w-full">
@@ -109,11 +120,14 @@ function Transactions() {
             </DialogHeader>
           </DialogContent>
         </Dialog>
-        <Button variant="outline" onClick={()=>{}} className="float-right">
-        <LuPlusCircle /> Transaction
+        <Button variant="outline" onClick={() => {}} className="float-right">
+          <LuPlusCircle /> Transaction
         </Button>
       </div>
-      <TransactionHistory startDate={new Date("2024-11-01")} />
+      <div className="w-full ">
+        <MonthChanger date={currDate} setDate={setCurrDate}/>
+      </div>
+      <TransactionHistory startDate={currUTCDate} />
     </Tabs>
   );
 }

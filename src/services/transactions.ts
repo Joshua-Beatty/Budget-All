@@ -47,11 +47,14 @@ function useTransactions(startDate: Date) {
     const newList = [];
     for (const account of storeData) {
       for (const transaction of account[1]) {
-        console.log(new Date(transaction.date) >= startDate);
-        if (new Date(transaction.date) >= startDate) {
+        //console.log(new Date(transaction.date) >= startDate);
+        const transDate = new Date(transaction.date)
+        if (transDate.getUTCMonth() == startDate.getUTCMonth() && transDate.getUTCFullYear() == startDate.getUTCFullYear()) {
+          console.log(transaction.date, transDate.getUTCMonth(), transDate.getUTCFullYear());
           (transaction as any).account = accountDict[transaction.account_id];
           newList.push(transaction);
         }
+
       }
     }
     newList.sort((a, b) => {
@@ -59,7 +62,7 @@ function useTransactions(startDate: Date) {
     });
     console.log(newList);
     setTransactions(newList as any);
-  }, [storeData, accountDict]);
+  }, [storeData, accountDict, startDate]);
 
   return transactions;
 }
