@@ -108,7 +108,7 @@ function ApplicationSettingsCard() {
   return (
     <>
       <Dialog >
-        <DialogTrigger asChild>{applicationSetup ? <Button variant="outline">Edit Application Settings</Button> :<Button variant="outline">Set Application Settings</Button>}
+        <DialogTrigger asChild>{applicationSetup ? <Button variant="outline">Edit Api Settings</Button> :<Button variant="outline">Set Api Settings</Button>}
         </DialogTrigger>
         <DialogContent >
           <DialogHeader>

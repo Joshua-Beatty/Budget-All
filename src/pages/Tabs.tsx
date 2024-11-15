@@ -12,8 +12,8 @@ function Tabs({ children,  title  }: { children: any, title: string }) {
   ];
   return (
     <div className="h-screen no-scrollbar">
-      <div className="w-full h-[calc(100vh-4rem)] no-scrollbar">
-        <div className="w-11/12 m-auto flex no-scrollbar flex-col justify-center items-center gap-1">
+      <div className="w-full h-[calc(100vh-10rem)] no-scrollbar">
+        <div className="w-11/12 m-auto flex no-scrollbar flex-col justify-center items-center gap-1 pb-20">
             <h1 className="text-5xl font-extrabold mb-2 mt-10">{title}</h1>
           {children}
         </div>
