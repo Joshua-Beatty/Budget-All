@@ -153,7 +153,7 @@ function AccountEntry({
           {/* <pre>{JSON.stringify(accounts, null, 2)}</pre> */}
         </>
       ) : (<div>
-        <Skeleton  className="w-1/2 m-auto mt-1 h-[70px] rounded-md"/>
+        <Skeleton  className="w-10/12 m-auto mt-1 h-[70px] rounded-md"/>
         </div>
       )}
     </div>

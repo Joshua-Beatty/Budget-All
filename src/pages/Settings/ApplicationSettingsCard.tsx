@@ -107,10 +107,10 @@ function ApplicationSettingsCard() {
 
   return (
     <>
-      <Dialog>
+      <Dialog >
         <DialogTrigger asChild>{applicationSetup ? <Button variant="outline">Edit Application Settings</Button> :<Button variant="outline">Set Application Settings</Button>}
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent >
           <DialogHeader>
             <DialogTitle>Application Settings</DialogTitle>
           </DialogHeader>
