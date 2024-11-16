@@ -11,12 +11,54 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
-function CategoryCreator() {
+import { useEffect, useState } from "react";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import { Budget } from "./BudgetManager";
+function CategoryCreator({monthYear}) {
   const [categoryType, setType] = useState("Spending")
   const [amount, setAmount] = useState("")
+  const [name, setName] = useState("")
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState("");
+  const [budget, setBudget] = useLocalStorage<Budget>(monthYear, []);
+  useEffect(()=>{
+    setAmount("$0")
+    setType("Spending")
+    setName("")
+  }, [open])
+  const [amountNum, setAmountNum] = useState(0)
+  useEffect(()=>{
+    const num = amount.replace(/[^0-9.-]+/g,"")
+    setAmountNum(Number(num))
+    console.log(Number(num))
+  }, [amount])
+
+
+  function submit(){
+    console.log("Submit")
+    if(!name){
+        setError("Please enter a name")
+        return;
+    }
+    if(budget.find(x=>x.name == name)){
+        setError("Category Name Duplicate")
+        return;
+    }
+    if(amountNum <= 0){
+        setError("Please enter an amount greater than 0")
+        return;
+    }
+    setBudget([{
+        name,
+        amount,
+        type: categoryType as any
+    },...budget])
+    setError("")
+    setOpen(false)
+  }
+
   return (
-    <Dialog>
+    <Dialog  open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline"> Create Category</Button>
       </DialogTrigger>
@@ -24,7 +66,6 @@ function CategoryCreator() {
         <DialogHeader>
           <DialogTitle>Create a new Category</DialogTitle>
           <DialogDescription>
-            <form className="space-y-4 w-full max-w-md pt-2">
               {/* Category Name */}
               <div>
                 <Label htmlFor="categoryName" className="block mb-1">
@@ -35,6 +76,10 @@ function CategoryCreator() {
                   type="text"
                   placeholder="Enter category name"
                   className="w-full"
+                  value={name}
+                  onChange={(e)=>{
+                    setName(e.target.value)
+                  }}
                 />
               </div>
 
@@ -45,12 +90,19 @@ function CategoryCreator() {
                 </Label>
                 <Input
                   id="amount"
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="$0.00"
                   className="w-full"
                   value={amount}
                   onChange={(e)=>{
-                    setAmount((e.target.value).replace(/\$/g, ""))
+                    const addDot = e.target.value.endsWith(".")
+                    const textString = (e.target.value).replace(/\$/g, "").replace(/[^0-9.]/g, "")
+                    const newNum = Math.trunc(Number(textString) * 100) / 100
+                    const newString = newNum.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      });
+                    setAmount("$" + newString + (addDot ? "." : ""))
                   }}
                 />
               </div>
@@ -62,7 +114,7 @@ function CategoryCreator() {
                 </Label>
                 
             <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild >
                 <Button variant="outline">{categoryType}</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -79,12 +131,12 @@ function CategoryCreator() {
                 </DropdownMenuItem>
             </DropdownMenuContent>
             </DropdownMenu>
+            <p className="pt-3 text-red-800">{error}</p>
               </div>
-            </form>
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button type="submit">Create</Button>
+          <Button type="submit" onClick={submit}>Create</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

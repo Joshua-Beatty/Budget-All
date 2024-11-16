@@ -3,7 +3,7 @@ import Tabs from "../Tabs";
 import { Button } from "@/components/ui/button";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import MonthChanger from "../Components/MonthChanger";
-import BudgetCreator from "./BudgetCreator";
+import BudgetManager from "./BudgetManager";
 function Budget() {
   const [currDate, setCurrDate] = useState(new Date());
   const [currUTCDate, setCurrUTCDate] = useState(new Date());
@@ -23,10 +23,11 @@ function Budget() {
 
   return (
     <Tabs title="Budget">
-      <BudgetCreator date={currDate} >
+      <BudgetManager date={currDate} >
       <div className="w-full ">
         <MonthChanger date={currDate} setDate={setCurrDate} />
-      </div></BudgetCreator>
+      </div>
+      </BudgetManager>
     </Tabs>
   );
 }
