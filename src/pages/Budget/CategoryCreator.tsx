@@ -84,7 +84,7 @@ function CategoryCreator({monthYear}) {
               </div>
 
               {/* Amount */}
-              <div>
+              <div  className="pt-2">
                 <Label htmlFor="amount" className="block mb-1">
                   Amount (USD)
                 </Label>
@@ -108,7 +108,7 @@ function CategoryCreator({monthYear}) {
               </div>
 
               {/* Category Type */}
-              <div>
+              <div  className="pt-2">
                 <Label htmlFor="categoryType" className="block mb-1">
                   Category Type
                 </Label>
