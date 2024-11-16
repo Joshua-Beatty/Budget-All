@@ -18,6 +18,24 @@ function BudgetManager({ date, children }: { date: Date; children: any }) {
   const transactions = useTransactions(date);
   const [remaining, setRemaining] = useState(0)
   useEffect(()=>{
+    const categoryMap = {}
+    for(const category of budget){
+      categoryMap[category.name] = category.type
+    }
+    let total = 0;
+    for(const trans of transactions){
+      
+      const transCategory = localStorage.getItem(trans.id)
+      //console.log({transCategory, name: category.name})
+      if(JSON.parse(transCategory) == category.name){
+          //console.log(trans)
+          if(trans.type == "debit"){
+              total -= Number(trans.amount)
+          } else {
+              total += Number(trans.amount)
+          }
+      }
+    }
 
   }, [transactions, budget])
 
