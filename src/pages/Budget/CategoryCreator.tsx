@@ -48,11 +48,11 @@ function CategoryCreator({monthYear}) {
         setError("Please enter an amount greater than 0")
         return;
     }
-    setBudget([{
+    setBudget([...budget, {
         name,
         amount,
         type: categoryType as any
-    },...budget])
+    }])
     setError("")
     setOpen(false)
   }
@@ -97,12 +97,13 @@ function CategoryCreator({monthYear}) {
                   value={amount}
                   onChange={(e)=>{
                     const addDot = e.target.value.endsWith(".")
+                    const addDotZero = e.target.value.endsWith(".0")
                     const textString = (e.target.value).replace(/\$/g, "").replace(/[^0-9.]/g, "")
                     const newNum = Math.trunc(Number(textString) * 100) / 100
                     const newString = newNum.toLocaleString("en-US", {
                         maximumFractionDigits: 2,
                       });
-                    setAmount("$" + newString + (addDot ? "." : ""))
+                    setAmount("$" + newString + (addDotZero ? ".0" : "") + (addDot ? "." : ""))
                   }}
                 />
               </div>
