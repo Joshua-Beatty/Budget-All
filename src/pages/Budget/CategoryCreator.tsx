@@ -13,11 +13,12 @@ import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 function CategoryCreator() {
-    const [categoryType, setType] = useState("Spending")
+  const [categoryType, setType] = useState("Spending")
+  const [amount, setAmount] = useState("")
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline"> Open</Button>
+        <Button variant="outline"> Create Category</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -44,9 +45,13 @@ function CategoryCreator() {
                 </Label>
                 <Input
                   id="amount"
-                  type="text"
+                  type="number"
                   placeholder="$0.00"
                   className="w-full"
+                  value={amount}
+                  onChange={(e)=>{
+                    setAmount((e.target.value).replace(/\$/g, ""))
+                  }}
                 />
               </div>
 
