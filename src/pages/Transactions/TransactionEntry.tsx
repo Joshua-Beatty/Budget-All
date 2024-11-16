@@ -33,17 +33,15 @@ function TransactionEntry({
   const [category, setCategory] = useLocalStorage(transaction.id, "");
   return (
     <TableRow className="border-0" disableHover={true}>
-      <TableCell className="w-40" >
-        <p>
-          {date.toLocaleDateString("en-US", { month: "short", day: "numeric" }).replace(/ /g, '\u00A0')+ " " + transaction.details.counterparty?.name || transaction.account.name}
-        </p>
-      </TableCell>
-      <TableCell ><div className="flex justify-end">
+      <TableCell className="w-full flex justify-between flex-wrap">
+        <p className="text-2xl">
+          {date.toLocaleDateString("en-US", { month: "short", day: "numeric" }).replace(/ /g, '\u00A0')}
+        </p><p>{(transaction.details.counterparty?.name || transaction.account.name).slice(0,25)}</p>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="text-base w-40">{category || "Uncategorized"}</Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent  className="bg-neutral-800">
             {budget.map((x) => (
               <DropdownMenuItem
                 className="text-lg"
@@ -64,9 +62,8 @@ function TransactionEntry({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
       </TableCell>
-      <TableCell className={`${amount < 0 ? "" : "text-green-600"}`}>
+      <TableCell className={`${amount < 0 ? "" : "text-green-600"} text-xl`}>
         {format.format(amount)}
       </TableCell>
     </TableRow>
