@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
 
 function CategoryPicker({
@@ -27,10 +28,12 @@ function CategoryPicker({
           {category || (search ? "No Filter" : "Uncategorized")}
         </Button>
       </DialogTrigger>
-      <DialogContent >
+      <DialogContent className="max-h-[90%]">
         <DialogHeader>
           Choose A Category
         </DialogHeader>
+        <ScrollArea className="max-h-[30rem]">
+            <div className="flex flex-col gap-4 w-10/12 m-auto">
         {search ? (
           <Button
             className="text-lg"
@@ -77,6 +80,8 @@ function CategoryPicker({
         >
           Uncategorized
         </Button>
+        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

@@ -37,9 +37,9 @@ function BudgetManager({ date, children }: { date: Date; children: any }) {
     if(totalString == "$0.00"){
       setRemaining("It's All Budgeted!")
     } else if (total > 0) {
-      setRemaining("{totalString} left to budget!")
+      setRemaining(`${totalString} left to budget!`)
     } else if(total < 0){
-      setRemaining("{invertTotalString} over budget!")
+      setRemaining(`${invertTotalString} over budget!`)
     }
 
   }, [budget])
