@@ -14,6 +14,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { Budget } from "./BudgetManager";
+import { replace, useLocation, useNavigate } from "react-router-dom";
 function CategoryCreator({monthYear}) {
   const [categoryType, setType] = useState("Spending")
   const [amount, setAmount] = useState("")
@@ -21,11 +22,26 @@ function CategoryCreator({monthYear}) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
   const [budget, setBudget] = useLocalStorage<Budget>(monthYear, []);
+  const navigate = useNavigate()
+  const location = useLocation()
   useEffect(()=>{
     setAmount("$0")
     setType("Spending")
     setName("")
   }, [open])
+  useEffect(()=>{
+    if(open)
+      replace("#category")
+    else
+      replace("#")
+  }, [open])
+  useEffect(()=>{
+    if(!location.hash && open)
+      setOpen(false)
+
+    console.log(location)
+    console.log(location.hash)
+  }, [location])
   const [amountNum, setAmountNum] = useState(0)
   useEffect(()=>{
     const num = amount.replace(/[^0-9.-]+/g,"")

@@ -16,7 +16,7 @@ function BudgetManager({ date, children }: { date: Date; children: any }) {
   const monthYear = date.getMonth() + " " + date.getFullYear();
   const [budget, setBudget] = useLocalStorage<Budget>(monthYear, []);
   const transactions = useTransactions(date);
-  const [remaining, setRemaining] = useState(<p></p>)
+  const [remaining, setRemaining] = useState("")
   const [openCategory, setOpenCategory] = useState("")
   const format = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -35,11 +35,11 @@ function BudgetManager({ date, children }: { date: Date; children: any }) {
     let invertTotalString = format.format(-total)
     
     if(totalString == "$0.00"){
-      setRemaining(<p>It's All Budgeted!</p>)
+      setRemaining("It's All Budgeted!")
     } else if (total > 0) {
-      setRemaining(<p>{totalString} left to budget!</p>)
+      setRemaining("{totalString} left to budget!")
     } else if(total < 0){
-      setRemaining(<p>{invertTotalString} over budget!</p>)
+      setRemaining("{invertTotalString} over budget!")
     }
 
   }, [budget])
