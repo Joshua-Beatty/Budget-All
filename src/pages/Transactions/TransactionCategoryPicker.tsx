@@ -1,61 +1,85 @@
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useState } from "react";
 
-function CategoryPicker({budget, category, setCategory, search, setOpen}: {budget: any, category: any, setCategory: any, search: any, setOpen?: any}){
-
-    return (        <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="text-base w-40">{category || (search ? "No Filter" : "Uncategorized")}</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent  className="bg-neutral-800">
-        { search ? <DropdownMenuItem
+function CategoryPicker({
+  budget,
+  category,
+  setCategory,
+  search
+}: {
+  budget: any;
+  category: any;
+  setCategory: any;
+  search: any;
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" className="text-base w-40">
+          {category || (search ? "No Filter" : "Uncategorized")}
+        </Button>
+      </DialogTrigger>
+      <DialogContent >
+        <DialogHeader>
+          Choose A Category
+        </DialogHeader>
+        {search ? (
+          <Button
             className="text-lg"
             onClick={() => {
               setCategory("");
-              if(setOpen)
-              setOpen(false);
+              if (setOpen) setOpen(false);
             }}
+            variant="outline"
           >
             No Filter
-          </DropdownMenuItem>
-           : ""}
-          {budget.map((x) => (
-            <DropdownMenuItem
-              className="text-lg"
-              onClick={() => {
-                setCategory(x.name);
-                if(setOpen)
-                setOpen(false);
-              }}
-            >
-              {x.name}
-            </DropdownMenuItem>
-          ))}
-          <DropdownMenuItem
+          </Button>
+        ) : (
+          ""
+        )}
+        {budget.map((x) => (
+          <Button
             className="text-lg"
             onClick={() => {
-              setCategory("Ignore");
-              if(setOpen)
-              setOpen(false);
+              setCategory(x.name);
+              if (setOpen) setOpen(false);
             }}
+            variant="outline"
           >
-            Ignore
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="text-lg"
-            onClick={() => {
-              setCategory(search ? "Uncategorized" : "");
-              if(setOpen)
-              setOpen(false);
-            }}
-          >
-            Uncategorized
-          </DropdownMenuItem>
-          
-          
-        </DropdownMenuContent>
-      </DropdownMenu>
-      )
+            {x.name}
+          </Button>
+        ))}
+        <Button
+          className="text-lg"
+          onClick={() => {
+            setCategory("Ignore");
+            if (setOpen) setOpen(false);
+          }}
+            variant="outline"
+        >
+          Ignore
+        </Button>
+        <Button
+          className="text-lg"
+          onClick={() => {
+            setCategory(search ? "Uncategorized" : "");
+            if (setOpen) setOpen(false);
+          }}
+            variant="outline"
+        >
+          Uncategorized
+        </Button>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
-export default CategoryPicker
+export default CategoryPicker;
