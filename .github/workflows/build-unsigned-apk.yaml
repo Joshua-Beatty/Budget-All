@@ -4,7 +4,7 @@ on:
   workflow_dispatch: # Allows the workflow to be manually triggered
 
 jobs:
-  setup-environment:
+  build-unsigned-apk:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,6 +44,9 @@ jobs:
         ndk-version: r27c
 
     - run: npm install
+    - run: rustup target add aarch64-linux-android
+      env:
+        NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
     - run: npm run tauri android build -- --apk
       env:
         NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
