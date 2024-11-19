@@ -43,6 +43,13 @@ jobs:
       with:
         ndk-version: r27c
 
+    - name: Set Env vars
+      run: |
+        export PATH="$PATH:$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin"
+        export CMAKE_ANDROID_NDK=$NDK_HOME
+      env:
+        NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+
     - run: npm install
     - run: rustup target add aarch64-linux-android
       env:
