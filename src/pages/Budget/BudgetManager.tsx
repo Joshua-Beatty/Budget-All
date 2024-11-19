@@ -44,12 +44,23 @@ function BudgetManager({ date, children }: { date: Date; children: any }) {
 
   }, [budget])
 
-  let remaingingDiv = null
+  function copyPrev(){
 
+    const prevMonth = new Date(+date)
+    prevMonth.setMonth(prevMonth.getMonth() - 1)
+    const monthYear = prevMonth.getMonth() + " " + prevMonth.getFullYear();
+    const prevBudget = localStorage.getItem(monthYear)
+    try {
+      setBudget(JSON.parse(prevBudget))
+    } catch(e) {
+      console.log(e)
+    }
+
+  }
   return (
     <>
       <div className="w-full flex justify-between">
-        <Button variant="outline">Copy Previous</Button>
+        <Button onClick={copyPrev} variant="outline">Copy Previous</Button>
         <CategoryCreator monthYear={monthYear}/>
       </div>
       {children}

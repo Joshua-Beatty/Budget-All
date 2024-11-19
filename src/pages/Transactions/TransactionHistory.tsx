@@ -12,7 +12,7 @@ function TransactionHistory({ startDate, category }: { startDate: Date, category
     <div className="w-full ">
       <Table>
         {transactions.map((x) => {
-          return <TableBody className="border-b-2 transition-colors hover:bg-muted/50 text-lg">
+          return <TableBody className="border-b-2 transition-colors  text-lg">
             <TransactionEntry transaction={x} category={category}/>
           </TableBody>
         }

@@ -87,7 +87,7 @@ function CategoryEntry({
       setBudget([...budget])
   }
   return (<>
-    <TableRow onClick={()=>{setOpenCategory(category.name)}} className="border-b-0">
+    <TableRow onClick={()=>{setOpenCategory(category.name)}} className="border-b-0" disableHover>
       <TableCell>
         <p className="text-lg">{category.name}</p>
         <p className="text-base">{category.type}</p>
@@ -101,7 +101,7 @@ function CategoryEntry({
         <p className="text-base">{format.format(remaining)}</p>
       </TableCell>
     </TableRow>
-    <TableRow onClick={()=>{setOpenCategory(category.name)}}>
+    <TableRow onClick={()=>{setOpenCategory(category.name)}} disableHover>
       <TableCell>
       </TableCell>
       <TableCell colSpan={2} >

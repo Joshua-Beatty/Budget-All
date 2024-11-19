@@ -118,7 +118,7 @@ function AccountEntry({
         <>
           <Table className="w-full m-auto">
             <TableHeader>
-              <TableRow>
+              <TableRow disableHover>
                 <TableHead>Account Name</TableHead>
                 <TableHead>
                   <div className="flex justify-center">Active</div>
@@ -127,7 +127,7 @@ function AccountEntry({
             </TableHeader>
             <TableBody>
               {accounts?.map((x) => (
-                <TableRow key={x.id}>
+                <TableRow key={x.id} disableHover>
                   <TableCell>{x.name}</TableCell>
                   <TableCell className="pl-0">
                     <div className="flex justify-center">

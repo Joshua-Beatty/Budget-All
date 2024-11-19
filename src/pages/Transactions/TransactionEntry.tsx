@@ -48,7 +48,7 @@ function TransactionEntry({
     
     ]
   return (<>
-    <TableRow className="border-0" disableHover={true} onClick={()=>setOpen(true)}>
+    <TableRow className="border-0" disableHover onClick={()=>setOpen(true)}>
       <TableCell className="w-full flex items-center justify-between flex-wrap">
         <p className="text-2xl">
           {date.toLocaleDateString("en-US", { month: "short", day: "numeric" }).replace(/ /g, '\u00A0')}
