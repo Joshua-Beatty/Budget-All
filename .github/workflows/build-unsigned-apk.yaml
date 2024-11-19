@@ -45,3 +45,5 @@ jobs:
 
     - run: npm install
     - run: npm run tauri android build -- --apk
+      env:
+        NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
