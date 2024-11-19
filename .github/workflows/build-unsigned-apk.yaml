@@ -38,11 +38,10 @@ jobs:
       uses: android-actions/setup-android@v3
 
     # Setup Android NDK
-    # - uses: nttld/setup-ndk@v1.5.0
-    #   id: setup-ndk
-    #   with:
-    #     ndk-version: r27d
-    #     link-to-sdk: true
+    - uses: nttld/setup-ndk@v1.5.0
+      id: setup-ndk
+      with:
+        ndk-version: r27c
 
     - run: npm install
     - run: npm run tauri android build -- --apk
