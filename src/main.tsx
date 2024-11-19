@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <HashRouter>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<Settings />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/budget" element={<Budget />} />
