@@ -19,6 +19,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import MonthChanger from "../Components/MonthChanger";
+import CategoryPicker from "./TransactionCategoryPicker";
+import { Budget } from "../Budget/BudgetManager";
 
 enum State {
   blank = 0,
@@ -77,16 +79,24 @@ function Transactions() {
 
   const [currDate, setCurrDate] = useState(new Date())
   const [currUTCDate, setCurrUTCDate] = useState(new Date())
+  const [budget, setBudget] = useState<Budget>([]);
   useEffect(()=>{
     const newDate = new Date(+currDate)
     setCurrUTCDate(new Date(`${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`))
     console.log("Updating currUTC date")
     console.log(currUTCDate, `${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`)
+    
+
+    const monthYear = currUTCDate.getUTCMonth() + " " + currUTCDate.getUTCFullYear();
+    setBudget(JSON.parse(localStorage.getItem(monthYear)))
+  
   }, [currDate])
+
+  const [categoryFilter, setCategoryFilter] = useState("")
 
   return (
     <Tabs title="Transactions">
-      <div className="w-full">
+      <div className="w-full flex justify-between">
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" onClick={refresh} className="float-left">
@@ -120,14 +130,15 @@ function Transactions() {
             </DialogHeader>
           </DialogContent>
         </Dialog>
-        <Button variant="outline" onClick={() => {}} className="float-right">
+        {/* <Button variant="outline" onClick={() => {}} className="float-right">
           <LuPlusCircle /> Transaction
-        </Button>
+        </Button> */}
+        <CategoryPicker budget={budget} category={categoryFilter} setCategory={setCategoryFilter} search={true} />
       </div>
       <div className="w-full ">
         <MonthChanger date={currDate} setDate={setCurrDate}/>
       </div>
-      <TransactionHistory startDate={currUTCDate} />
+      <TransactionHistory startDate={currUTCDate} category={categoryFilter} />
     </Tabs>
   );
 }

@@ -14,6 +14,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { Budget } from "./BudgetManager";
+import { replace, useLocation, useNavigate } from "react-router-dom";
 function CategoryCreator({monthYear}) {
   const [categoryType, setType] = useState("Spending")
   const [amount, setAmount] = useState("")
@@ -26,6 +27,7 @@ function CategoryCreator({monthYear}) {
     setType("Spending")
     setName("")
   }, [open])
+  
   const [amountNum, setAmountNum] = useState(0)
   useEffect(()=>{
     const num = amount.replace(/[^0-9.-]+/g,"")
@@ -48,11 +50,11 @@ function CategoryCreator({monthYear}) {
         setError("Please enter an amount greater than 0")
         return;
     }
-    setBudget([{
+    setBudget([...budget, {
         name,
         amount,
         type: categoryType as any
-    },...budget])
+    }])
     setError("")
     setOpen(false)
   }
@@ -97,12 +99,13 @@ function CategoryCreator({monthYear}) {
                   value={amount}
                   onChange={(e)=>{
                     const addDot = e.target.value.endsWith(".")
+                    const addDotZero = e.target.value.endsWith(".0")
                     const textString = (e.target.value).replace(/\$/g, "").replace(/[^0-9.]/g, "")
                     const newNum = Math.trunc(Number(textString) * 100) / 100
                     const newString = newNum.toLocaleString("en-US", {
                         maximumFractionDigits: 2,
                       });
-                    setAmount("$" + newString + (addDot ? "." : ""))
+                    setAmount("$" + newString + (addDotZero ? ".0" : "") + (addDot ? "." : ""))
                   }}
                 />
               </div>
